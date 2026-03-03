@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passive with Modal Verbs – B1</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&family=Fira+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --forest:   #1B3A2D;
+    --mid:      #2C6E4F;
+    --leaf:     #4A9B6F;
+    --mint:     #D6EAD9;
+    --amber:    #F5A623;
+    --cream:    #F7F4EE;
+    --red:      #C0392B;
+    --green-ok: #27AE60;
+    --text:     #1B3A2D;
+    --muted:    #6B8F7A;
+  }
+
+  html, body { width:100%; height:100%; background:#0e1f17; font-family:'Source Sans 3',sans-serif; overflow:hidden; }
+
+  #deck { width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; }
+
+  .slide {
+    display:none; flex-direction:column;
+    width:min(95vw,1100px); min-height:min(90vh,618px);
+    background:var(--cream); border-radius:6px; overflow:hidden;
+    box-shadow:0 24px 80px rgba(0,0,0,0.5); position:relative;
+  }
+  .slide.active { display:flex; }
+
+  /* HEADER */
+  .slide-header {
+    background:var(--forest); padding:16px 36px;
+    display:flex; align-items:center; justify-content:space-between; flex-shrink:0;
+  }
+  .slide-header h1 { font-family:'Playfair Display',serif; font-size:1.5rem; color:#fff; font-weight:700; }
+  .slide-header .tag {
+    background:var(--amber); color:var(--forest); font-size:0.78rem; font-weight:600;
+    padding:4px 14px; border-radius:20px; text-transform:uppercase; letter-spacing:0.08em; white-space:nowrap;
+  }
+  .amber-bar { height:5px; background:var(--amber); flex-shrink:0; }
+
+  /* BODY */
+  .slide-body { padding:24px 36px 20px; flex:1; display:flex; flex-direction:column; gap:12px; overflow-y:auto; }
+
+  .instruction { font-size:0.98rem; font-weight:600; color:var(--forest); border-left:4px solid var(--amber); padding-left:12px; line-height:1.4; }
+
+  /* TITLE SLIDE */
+  #slide-title { background:var(--forest); }
+  .title-body { flex:1; display:flex; flex-direction:column; justify-content:center; padding:44px 64px; position:relative; }
+  .eyebrow { font-family:'Fira Mono',monospace; font-size:0.85rem; color:var(--amber); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:14px; }
+  .title-body h1 { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; color:#fff; line-height:1.1; margin-bottom:20px; }
+  .modals-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:26px; }
+  .modal-chip { background:var(--mid); color:#fff; font-family:'Fira Mono',monospace; font-size:1rem; padding:6px 18px; border-radius:4px; border:1px solid var(--leaf); }
+  .meta { font-size:0.95rem; color:var(--mint); opacity:0.8; }
+  .deco { position:absolute; right:60px; top:50%; transform:translateY(-50%); font-size:9rem; opacity:0.1; pointer-events:none; }
+
+  /* FORMULA */
+  .formula-box {
+    background:var(--mid); color:#fff; font-family:'Fira Mono',monospace;
+    font-size:1.1rem; text-align:center; padding:15px 24px; border-radius:6px; letter-spacing:0.04em;
+  }
+  .formula-box span { color:var(--amber); }
+
+  /* MODAL TABLE */
+  .modal-table { width:100%; border-collapse:collapse; font-size:0.91rem; }
+  .modal-table th { background:var(--forest); color:#fff; padding:9px 14px; text-align:left; font-weight:600; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.06em; }
+  .modal-table td { padding:9px 14px; border-bottom:1px solid #ddd; color:var(--text); vertical-align:top; }
+  .modal-table tr:nth-child(even) td { background:var(--mint); }
+  .modal-table .mw { font-family:'Fira Mono',monospace; font-weight:500; color:var(--mid); font-size:1rem; }
+  .modal-table .ex { font-style:italic; color:var(--muted); }
+
+  /* DIVIDER */
+  .divider-slide { background:var(--mid) !important; justify-content:center; align-items:center; text-align:center; gap:0; }
+  .div-icon { font-size:3.5rem; margin-bottom:14px; opacity:0.85; }
+  .div-label { font-family:'Fira Mono',monospace; font-size:0.85rem; color:var(--amber); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:10px; }
+  .div-title { font-family:'Playfair Display',serif; font-size:2.4rem; font-weight:700; color:#fff; margin-bottom:12px; }
+  .div-sub { font-size:0.97rem; color:var(--mint); max-width:520px; line-height:1.55; }
+
+  /* EX ITEMS */
+  .ex-item { display:flex; align-items:baseline; gap:10px; padding:9px 14px; background:#fff; border-radius:5px; border:1px solid #e0e8e3; font-size:0.93rem; color:var(--text); line-height:1.5; }
+  .ex-num { background:var(--mid); color:#fff; font-size:0.78rem; font-weight:600; min-width:24px; height:24px; border-radius:4px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .ex-text { flex:1; }
+  .blank { display:inline-block; min-width:130px; border-bottom:2px solid var(--mid); margin:0 4px; vertical-align:bottom; height:1.05em; }
+  .hint { font-size:0.81rem; color:var(--muted); font-style:italic; margin-left:3px; }
+
+  /* WORD BOX */
+  .word-box { background:var(--mint); border:1.5px solid var(--leaf); border-radius:6px; padding:10px 16px; font-size:0.89rem; color:var(--forest); display:flex; flex-wrap:wrap; gap:5px 14px; align-items:center; }
+  .word-box strong { font-weight:600; }
+  .word-box .w { font-family:'Fira Mono',monospace; font-size:0.87rem; }
+
+  /* MATCHING */
+  .match-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .match-col { display:flex; flex-direction:column; gap:8px; }
+  .match-item { background:#fff; border:1px solid #e0e8e3; border-radius:5px; padding:9px 14px; font-size:0.91rem; color:var(--text); display:flex; align-items:center; gap:10px; }
+  .match-letter { background:var(--amber); color:var(--forest); font-weight:700; font-size:0.82rem; min-width:26px; height:26px; border-radius:4px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:'Fira Mono',monospace; }
+  .match-num { background:var(--mid); color:#fff; font-weight:600; font-size:0.82rem; min-width:26px; height:26px; border-radius:4px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:'Fira Mono',monospace; }
+
+  /* ERROR */
+  .err-item { display:flex; flex-direction:column; gap:4px; padding:10px 14px; background:#fff; border-radius:5px; border:1px solid #e0e8e3; font-size:0.92rem; }
+  .err-top { display:flex; align-items:baseline; gap:10px; }
+  .err-wrong { color:var(--red); }
+  .err-blank-line { border-bottom:2px dashed var(--mid); margin-top:4px; height:1.1em; margin-left:34px; }
+
+  /* TRANSFORM */
+  .trans-item { display:flex; flex-direction:column; gap:5px; padding:10px 14px; background:#fff; border-radius:5px; border:1px solid #e0e8e3; font-size:0.92rem; }
+  .trans-active { color:var(--muted); font-style:italic; }
+  .trans-passive-label { font-size:0.78rem; font-weight:600; color:var(--mid); text-transform:uppercase; letter-spacing:0.05em; margin-left:34px; }
+  .trans-blank { border-bottom:2px solid var(--mid); margin-left:34px; height:1.1em; margin-top:2px; }
+
+  /* ANSWERS */
+  .reveal-btn {
+    align-self:flex-start; margin-top:auto;
+    background:var(--amber); color:var(--forest); border:none;
+    padding:10px 28px; border-radius:5px;
+    font-family:'Source Sans 3',sans-serif; font-size:0.94rem; font-weight:600;
+    cursor:pointer; transition:background 0.2s, transform 0.1s; letter-spacing:0.02em;
+  }
+  .reveal-btn:hover { background:#e09510; transform:translateY(-1px); }
+  .reveal-btn.revealed { background:var(--mid); color:#fff; }
+
+  .answer-overlay { display:none; flex-direction:column; gap:7px; animation:fadeIn 0.3s ease; }
+  .answer-overlay.visible { display:flex; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
+
+  .ans-item { display:flex; align-items:baseline; gap:10px; padding:8px 14px; background:#fff; border-radius:5px; border-left:4px solid var(--green-ok); font-size:0.91rem; color:var(--text); }
+  .ans-n { background:var(--green-ok); color:#fff; font-size:0.78rem; font-weight:600; min-width:22px; height:22px; border-radius:3px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .ans-full { font-family:'Fira Mono',monospace; color:var(--green-ok); font-weight:500; margin-right:6px; }
+  .ans-ctx { color:var(--muted); font-style:italic; font-size:0.87rem; }
+
+  /* WRAP-UP */
+  .cards-row { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+  .modal-card { background:var(--mid); border-radius:6px; overflow:hidden; display:flex; flex-direction:column; }
+  .card-head { background:var(--amber); color:var(--forest); font-family:'Fira Mono',monospace; font-size:1rem; font-weight:500; text-align:center; padding:8px 6px; }
+  .card-body { padding:10px; flex:1; display:flex; flex-direction:column; gap:5px; }
+  .card-use { font-size:0.79rem; font-weight:600; color:var(--mint); }
+  .card-ex { font-size:0.77rem; color:#b8d4bf; font-style:italic; line-height:1.4; }
+
+  /* PROGRESS BAR */
+  #progress-bar { position:fixed; top:0; left:0; height:3px; background:var(--amber); transition:width 0.3s ease; z-index:200; }
+
+  /* NAV */
+  #nav { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:14px; z-index:100; }
+  .nav-btn { background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.25); color:#fff; width:42px; height:42px; border-radius:50%; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s; backdrop-filter:blur(6px); }
+  .nav-btn:hover { background:rgba(255,255,255,0.22); }
+  .nav-btn:disabled { opacity:0.3; cursor:default; }
+  #slide-counter { font-family:'Fira Mono',monospace; font-size:0.8rem; color:rgba(255,255,255,0.5); min-width:54px; text-align:center; }
+
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="deck">
+
+  <!-- ═══════════════════════════════════════
+       1. TITLE
+  ═══════════════════════════════════════ -->
+  <div class="slide active" id="slide-title">
+    <div class="title-body">
+      <div class="eyebrow">B1 · 20 Minutes</div>
+      <h1>The Passive<br>with Modal Verbs</h1>
+      <div class="modals-row">
+        <span class="modal-chip">must</span>
+        <span class="modal-chip">should</span>
+        <span class="modal-chip">can</span>
+        <span class="modal-chip">may</span>
+        <span class="modal-chip">will</span>
+      </div>
+      <div class="meta">Context: California's State Parks &amp; Campfire Rules</div>
+    </div>
+    <div class="deco">🌲</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       2. GRAMMAR FOCUS
+  ═══════════════════════════════════════ -->
+  <div class="slide">
+    <div class="slide-header"><h1>Grammar Focus</h1><span class="tag">4 min</span></div>
+    <div class="amber-bar"></div>
+    <div class="slide-body">
+      <div class="formula-box"><span>modal verb</span> &nbsp;+&nbsp; <span>be</span> &nbsp;+&nbsp; <span>past participle</span></div>
+      <table class="modal-table">
+        <thead><tr><th>Modal</th><th>Meaning</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td class="mw">must</td><td>strong obligation / prohibition</td><td class="ex">Campfires <strong>must not be lit</strong> near dry grass.</td></tr>
+          <tr><td class="mw">should</td><td>recommendation / advice</td><td class="ex">Garbage <strong>should be put</strong> in bins.</td></tr>
+          <tr><td class="mw">can</td><td>permission / possibility</td><td class="ex">Dogs <strong>can be taken</strong> into many parks.</td></tr>
+          <tr><td class="mw">may</td><td>weaker permission</td><td class="ex">Cars <strong>may be parked</strong> in official lots only.</td></tr>
+          <tr><td class="mw">will</td><td>future rule / certainty</td><td class="ex">Noisy dogs <strong>will not be allowed</strong>.</td></tr>
+        </tbody>
+      </table>
+      <div style="background:var(--mint);border-radius:5px;padding:10px 16px;font-size:0.88rem;color:var(--forest);">
+        💡 <strong>Negative:</strong> modal + <em>not</em> + be + past participle &nbsp;|&nbsp; e.g. <span style="font-family:'Fira Mono',monospace;">must not be lit &nbsp; should not be built &nbsp; will not be allowed</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       3. DIVIDER — EXERCISE 1: MATCHING
+  ═══════════════════════════════════════ -->
+  <div class="slide divider-slide">
+    <div class="div-icon">🔗</div>
+    <div class="div-label">Exercise 1 · Matching</div>
+    <div class="div-title">Modal to Meaning</div>
+    <div class="div-sub">Match each modal verb to its correct meaning and example sentence.</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       4. EXERCISE 1: MATCHING
+  ═══════════════════════════════════════ -->
+  <div class="slide">
+    <div class="slide-header"><h1>Exercise 1 · Match the Modal to the Meaning</h1><span class="tag">3 min</span></div>
+    <div class="amber-bar"></div>
+    <div class="slide-body">
+      <p class="instruction">Match each modal (1–5) to its meaning (A–E) and example sentence (i–v).</p>
+      <div class="match-grid">
+        <div class="match-col">
+          <p style="font-size:0.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px;">Modals</p>
+          <div class="match-item"><span class="match-num">1</span> must</div>
+          <div class="match-item"><span class="match-num">2</span> should</div>
+          <div class="match-item"><span class="match-num">3</span> can</div>
+          <div class="match-item"><span class="match-num">4</span> may</div>
+          <div class="match-item"><span class="match-num">5</span> will</div>
+        </div>
+        <div class="match-col">
+          <p style="font-size:0.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px;">Meanings</p>
+          <div class="match-item"><span class="match-letter">A</span> Weaker permission — not certain</div>
+          <div class="match-item"><span class="match-letter">B</span> Advice or recommendation</div>
+          <div class="match-item"><span class="match-letter">C</span> Future rule — definitely will happen</div>
+          <div class="match-item"><span class="match-letter">D</span> Strong obligation or prohibition</div>
+          <div class="match-item"><span class="match-letter">E</span> General permission or possibility</div>
+        </div>
+      </div>
+      <p style="font-size:0.82rem;color:var(--muted);font-style:italic;">Write your answers: 1–__ &nbsp; 2–__ &nbsp; 3–__ &nbsp; 4–__ &nbsp; 5–__</p>
+
+      <button class="reveal-btn" onclick="revealAnswers('match')">Show Answers</button>
+      <div class="answer-overlay" id="match-answers">
+        <div class="two-col">
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="ans-item"><span class="ans-n">1</span><span class="ans-full">1 – D</span><span class="ans-ctx">must = strong obligation / prohibition</span></div>
+            <div class="ans-item"><span class="ans-n">2</span><span class="ans-full">2 – B</span><span class="ans-ctx">should = advice or recommendation</span></div>
+            <div class="ans-item"><span class="ans-n">3</span><span class="ans-full">3 – E</span><span class="ans-ctx">can = general permission or possibility</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="ans-item"><span class="ans-n">4</span><span class="ans-full">4 – A</span><span class="ans-ctx">may = weaker permission — not certain</span></div>
+            <div class="ans-item"><span class="ans-n">5</span><span class="ans-full">5 – C</span><span class="ans-ctx">will = future rule — definitely will happen</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       5. DIVIDER — EXERCISE 2: GAP-FILL
+  ═══════════════════════════════════════ -->
+  <div class="slide divider-slide">
+    <div class="div-icon">✏️</div>
+    <div class="div-label">Exercise 2 · Gap-Fill</div>
+    <div class="div-title">Campfire &amp; Park Rules</div>
+    <div class="div-sub">Complete each rule using the correct modal passive form.<br>The modal and verb are given in brackets.</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       6. EXERCISE 2: GAP-FILL
+  ═══════════════════════════════════════ -->
+  <div class="slide">
+    <div class="slide-header"><h1>Exercise 2 · Gap-Fill</h1><span class="tag">4 min</span></div>
+    <div class="amber-bar"></div>
+    <div class="slide-body">
+      <p class="instruction">Complete each rule. Use: <strong>modal + be + past participle</strong>. The modal and verb are in brackets.</p>
+
+      <div class="two-col">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="ex-item"><span class="ex-num">1</span><span class="ex-text">Animal life <span class="blank"></span> at all times. <span class="hint">(must / protect)</span></span></div>
+          <div class="ex-item"><span class="ex-num">2</span><span class="ex-text">Campfires <span class="blank"></span> near dry grass. <span class="hint">(must not / light)</span></span></div>
+          <div class="ex-item"><span class="ex-num">3</span><span class="ex-text">Permits <span class="blank"></span> online. <span class="hint">(can / order)</span></span></div>
+          <div class="ex-item"><span class="ex-num">4</span><span class="ex-text">Garbage <span class="blank"></span> in bins. <span class="hint">(should / put)</span></span></div>
+          <div class="ex-item"><span class="ex-num">5</span><span class="ex-text">Cars <span class="blank"></span> in official lots only. <span class="hint">(may / park)</span></span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="ex-item"><span class="ex-num">6</span><span class="ex-text">Dead wood <span class="blank"></span> from around the fire. <span class="hint">(must / clear)</span></span></div>
+          <div class="ex-item"><span class="ex-num">7</span><span class="ex-text">Dogs <span class="blank"></span> on a short leash. <span class="hint">(must / keep)</span></span></div>
+          <div class="ex-item"><span class="ex-num">8</span><span class="ex-text">Noisy dogs <span class="blank"></span> in the parks. <span class="hint">(will not / allow)</span></span></div>
+          <div class="ex-item"><span class="ex-num">9</span><span class="ex-text">Picnic areas <span class="blank"></span> after use. <span class="hint">(should / clean)</span></span></div>
+          <div class="ex-item"><span class="ex-num">10</span><span class="ex-text">Wildfires <span class="blank"></span> if rules are followed. <span class="hint">(can / prevent)</span></span></div>
+        </div>
+      </div>
+
+      <button class="reveal-btn" onclick="revealAnswers('gap')">Show Answers</button>
+      <div class="answer-overlay" id="gap-answers">
+        <div class="two-col">
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="ans-item"><span class="ans-n">1</span><span class="ans-full">must be protected</span></div>
+            <div class="ans-item"><span class="ans-n">2</span><span class="ans-full">must not be lit</span></div>
+            <div class="ans-item"><span class="ans-n">3</span><span class="ans-full">can be ordered</span></div>
+            <div class="ans-item"><span class="ans-n">4</span><span class="ans-full">should be put</span></div>
+            <div class="ans-item"><span class="ans-n">5</span><span class="ans-full">may be parked</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="ans-item"><span class="ans-n">6</span><span class="ans-full">must be cleared</span></div>
+            <div class="ans-item"><span class="ans-n">7</span><span class="ans-full">must be kept</span></div>
+            <div class="ans-item"><span class="ans-n">8</span><span class="ans-full">will not be allowed</span></div>
+            <div class="ans-item"><span class="ans-n">9</span><span class="ans-full">should be cleaned</span></div>
+            <div class="ans-item"><span class="ans-n">10</span><span class="ans-full">can be prevented</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       7. DIVIDER — EXERCISE 3: ERROR CORRECTION
+  ═══════════════════════════════════════ -->
+  <div class="slide divider-slide">
+    <div class="div-icon">🔍</div>
+    <div class="div-label">Exercise 3 · Error Correction</div>
+    <div class="div-title">Spot the Mistake</div>
+    <div class="div-sub">Each sentence has one mistake in the passive modal form.<br>Find it and write the correct version.</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       8. EXERCISE 3: ERROR CORRECTION
+  ═══════════════════════════════════════ -->
+  <div class="slide">
+    <div class="slide-header"><h1>Exercise 3 · Error Correction</h1><span class="tag">4 min</span></div>
+    <div class="amber-bar"></div>
+    <div class="slide-body">
+      <p class="instruction">Each sentence contains one mistake. Find it, underline it, and write the correct sentence on the line below.</p>
+
+      <div class="err-item">
+        <div class="err-top"><span class="ex-num">1</span><span class="err-wrong">Dogs should kept on a short leash at all times.</span></div>
+        <div class="err-blank-line"></div>
+      </div>
+      <div class="err-item">
+        <div class="err-top"><span class="ex-num">2</span><span class="err-wrong">Campfires must not lit near dry grass or in forest areas.</span></div>
+        <div class="err-blank-line"></div>
+      </div>
+      <div class="err-item">
+        <div class="err-top"><span class="ex-num">3</span><span class="err-wrong">Permits can ordering online or from your local fire department.</span></div>
+        <div class="err-blank-line"></div>
+      </div>
+      <div class="err-item">
+        <div class="err-top"><span class="ex-num">4</span><span class="err-wrong">Dead wood is must be cleared from around the campfire.</span></div>
+        <div class="err-blank-line"></div>
+      </div>
+      <div class="err-item">
+        <div class="err-top"><span class="ex-num">5</span><span class="err-wrong">Noisy dogs will not allowed in the parks.</span></div>
+        <div class="err-blank-line"></div>
+      </div>
+      <div class="err-item">
+        <div class="err-top"><span class="ex-num">6</span><span class="err-wrong">Picnic areas should be clean after use.</span></div>
+        <div class="err-blank-line"></div>
+      </div>
+
+      <button class="reveal-btn" onclick="revealAnswers('err')">Show Answers</button>
+      <div class="answer-overlay" id="err-answers">
+        <div class="two-col">
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="ans-item"><span class="ans-n">1</span><span class="ans-full">should be kept</span><span class="ans-ctx">missing 'be'</span></div>
+            <div class="ans-item"><span class="ans-n">2</span><span class="ans-full">must not be lit</span><span class="ans-ctx">missing 'be'</span></div>
+            <div class="ans-item"><span class="ans-n">3</span><span class="ans-full">can be ordered</span><span class="ans-ctx">'ordering' → past participle 'ordered'</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="ans-item"><span class="ans-n">4</span><span class="ans-full">must be cleared</span><span class="ans-ctx">remove extra 'is'</span></div>
+            <div class="ans-item"><span class="ans-n">5</span><span class="ans-full">will not be allowed</span><span class="ans-ctx">missing 'be'</span></div>
+            <div class="ans-item"><span class="ans-n">6</span><span class="ans-full">should be cleaned</span><span class="ans-ctx">'clean' → past participle 'cleaned'</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       9. DIVIDER — EXERCISE 4: TRANSFORMATION
+  ═══════════════════════════════════════ -->
+  <div class="slide divider-slide">
+    <div class="div-icon">🔄</div>
+    <div class="div-label">Exercise 4 · Transformation</div>
+    <div class="div-title">Active → Passive</div>
+    <div class="div-sub">Rewrite each active sentence as a passive sentence.<br>Keep the same modal verb and meaning.</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       10. EXERCISE 4: TRANSFORMATION
+  ═══════════════════════════════════════ -->
+  <div class="slide">
+    <div class="slide-header"><h1>Exercise 4 · Sentence Transformation</h1><span class="tag">5 min</span></div>
+    <div class="amber-bar"></div>
+    <div class="slide-body">
+      <p class="instruction">Rewrite each sentence in the passive. You don't need to include the agent (by…) unless it's important.</p>
+      <div class="word-box">
+        <strong>Remember:</strong> <span class="w">Active: Rangers must clear dead wood. &nbsp;→&nbsp; Passive: Dead wood must be cleared.</span>
+      </div>
+
+      <div class="trans-item">
+        <div class="err-top"><span class="ex-num">1</span><span class="trans-active">You should extinguish campfires completely before leaving.</span></div>
+        <div class="trans-passive-label">Passive →</div>
+        <div class="trans-blank"></div>
+      </div>
+      <div class="trans-item">
+        <div class="err-top"><span class="ex-num">2</span><span class="trans-active">Visitors must not feed the animals.</span></div>
+        <div class="trans-passive-label">Passive →</div>
+        <div class="trans-blank"></div>
+      </div>
+      <div class="trans-item">
+        <div class="err-top"><span class="ex-num">3</span><span class="trans-active">You can order permits from your local fire department.</span></div>
+        <div class="trans-passive-label">Passive →</div>
+        <div class="trans-blank"></div>
+      </div>
+      <div class="trans-item">
+        <div class="err-top"><span class="ex-num">4</span><span class="trans-active">Park rangers will not allow campfires during a fire ban.</span></div>
+        <div class="trans-passive-label">Passive →</div>
+        <div class="trans-blank"></div>
+      </div>
+      <div class="trans-item">
+        <div class="err-top"><span class="ex-num">5</span><span class="trans-active">You should leave picnic areas clean after use.</span></div>
+        <div class="trans-passive-label">Passive →</div>
+        <div class="trans-blank"></div>
+      </div>
+      <div class="trans-item">
+        <div class="err-top"><span class="ex-num">6</span><span class="trans-active">Everyone can prevent wildfires by following the rules.</span></div>
+        <div class="trans-passive-label">Passive →</div>
+        <div class="trans-blank"></div>
+      </div>
+
+      <button class="reveal-btn" onclick="revealAnswers('trans')">Show Answers</button>
+      <div class="answer-overlay" id="trans-answers">
+        <div class="two-col">
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="ans-item"><span class="ans-n">1</span><span class="ans-full">Campfires should be extinguished completely before leaving.</span></div>
+            <div class="ans-item"><span class="ans-n">2</span><span class="ans-full">Animals must not be fed.</span></div>
+            <div class="ans-item"><span class="ans-n">3</span><span class="ans-full">Permits can be ordered from your local fire department.</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="ans-item"><span class="ans-n">4</span><span class="ans-full">Campfires will not be allowed during a fire ban.</span></div>
+            <div class="ans-item"><span class="ans-n">5</span><span class="ans-full">Picnic areas should be left clean after use.</span></div>
+            <div class="ans-item"><span class="ans-n">6</span><span class="ans-full">Wildfires can be prevented by following the rules.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       11. WRAP-UP
+  ═══════════════════════════════════════ -->
+  <div class="slide" style="background:var(--forest);">
+    <div style="background:var(--amber);height:5px;flex-shrink:0;"></div>
+    <div class="slide-body" style="padding:28px 36px;">
+      <p style="font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:700;color:#fff;margin-bottom:4px;">Wrap-Up · The Formula</p>
+      <div class="formula-box" style="margin-bottom:16px;"><span>modal verb</span> &nbsp;+&nbsp; <span>be</span> &nbsp;+&nbsp; <span>past participle</span></div>
+      <div class="cards-row">
+        <div class="modal-card">
+          <div class="card-head">must</div>
+          <div class="card-body"><div class="card-use">Strong obligation</div><div class="card-ex">Fires must not be lit.</div></div>
+        </div>
+        <div class="modal-card">
+          <div class="card-head">should</div>
+          <div class="card-body"><div class="card-use">Advice</div><div class="card-ex">Bins should be used.</div></div>
+        </div>
+        <div class="modal-card">
+          <div class="card-head">can</div>
+          <div class="card-body"><div class="card-use">Permission</div><div class="card-ex">Dogs can be taken in.</div></div>
+        </div>
+        <div class="modal-card">
+          <div class="card-head">may</div>
+          <div class="card-body"><div class="card-use">Weaker permission</div><div class="card-ex">Cars may be parked here.</div></div>
+        </div>
+        <div class="modal-card">
+          <div class="card-head">will</div>
+          <div class="card-body"><div class="card-use">Future rule</div><div class="card-ex">Dogs will not be allowed.</div></div>
+        </div>
+      </div>
+      <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;">
+        <div style="background:var(--mid);border-radius:5px;padding:10px 18px;font-size:0.87rem;color:var(--mint);flex:1;min-width:180px;">
+          <strong style="color:#fff;display:block;margin-bottom:4px;">Common mistakes to avoid:</strong>
+          ✗ Dogs should <em>kept</em>… &nbsp;→&nbsp; ✓ should <strong>be</strong> kept<br>
+          ✗ must <em>be ordering</em> &nbsp;→&nbsp; ✓ must be <strong>ordered</strong>
+        </div>
+        <div style="background:var(--mid);border-radius:5px;padding:10px 18px;font-size:0.87rem;color:var(--mint);flex:1;min-width:180px;">
+          <strong style="color:#fff;display:block;margin-bottom:4px;">Negative form:</strong>
+          modal + <strong>not</strong> + be + past participle<br>
+          <em>Fires must not be lit. Dogs will not be allowed.</em>
+        </div>
+      </div>
+      <p style="margin-top:14px;font-size:0.95rem;color:var(--mint);font-style:italic;text-align:center;opacity:0.7;">🌲 Great work today!</p>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<div id="nav">
+  <button class="nav-btn" id="btn-prev" onclick="navigate(-1)" disabled>&#8592;</button>
+  <span id="slide-counter">1 / 11</span>
+  <button class="nav-btn" id="btn-next" onclick="navigate(1)">&#8594;</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  function navigate(dir) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(total - 1, current + dir));
+    slides[current].classList.add('active');
+    document.getElementById('slide-counter').textContent = `${current + 1} / ${total}`;
+    document.getElementById('btn-prev').disabled = current === 0;
+    document.getElementById('btn-next').disabled = current === total - 1;
+    document.getElementById('progress-bar').style.width = `${((current + 1) / total) * 100}%`;
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigate(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   navigate(-1);
+  });
+
+  function revealAnswers(id) {
+    const overlay = document.getElementById(id + '-answers');
+    const btn = overlay.previousElementSibling;
+    overlay.classList.toggle('visible');
+    if (overlay.classList.contains('visible')) {
+      btn.textContent = 'Hide Answers';
+      btn.classList.add('revealed');
+    } else {
+      btn.textContent = 'Show Answers';
+      btn.classList.remove('revealed');
+    }
+  }
+
+  // Init progress bar
+  document.getElementById('progress-bar').style.width = `${(1 / total) * 100}%`;
+</script>
+</body>
+</html>
